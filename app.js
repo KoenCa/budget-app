@@ -206,6 +206,13 @@ var UIController = (function () {
         return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
     };
 
+    // Own function to loop through a nodeList
+    var nodeListForEach = function (list, callback) {
+        for (var i = 0; i < list.length; i++) {
+            callback(list[i], i); //current element and index are passed to the callback function that gets called for every element
+        }
+    };
+
     return {
         getInput: function () {
             return {
@@ -267,11 +274,11 @@ var UIController = (function () {
 
         displayBudget: function (obj) {
             var type;
-            obj.budget > 0 ? type ='inc' : type = 'exp'; //determine if budget is - or +
+            obj.budget > 0 ? type = 'inc' : type = 'exp'; //determine if budget is - or +
 
             document.querySelector(DOMstrings.budgetLabel).textContent = formatNumber(obj.budget, type);
             document.querySelector(DOMstrings.incomeLabel).textContent = formatNumber(obj.totalInc, 'inc');
-            document.querySelector(DOMstrings.expenseLabel).textContent =  formatNumber(obj.totalExp, 'exp');
+            document.querySelector(DOMstrings.expenseLabel).textContent = formatNumber(obj.totalExp, 'exp');
 
             if (obj.percentage > 0) {
                 document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage + '%';
@@ -282,7 +289,7 @@ var UIController = (function () {
 
         displayMonth: function () {
             var now, year, month, months;
-            
+
             //Create new date object which is always the current date
             now = new Date();
 
@@ -300,13 +307,6 @@ var UIController = (function () {
             // Get all the percentage labels for the expenses
             fields = document.querySelectorAll(DOMstrings.expensesPercentageLabel);
 
-            // Own function to loop through a nodeList
-            var nodeListForEach = function (list, callback) {
-                for (var i = 0; i < list.length; i++) {
-                    callback(list[i], i); //current element and index are passed to the callback function that gets called for every element
-                }
-            };
-
             // Use the nodeList function to loop through the nodeList and add a percentage to each node
             nodeListForEach(fields, function (current, index) {
                 if (percentages[index] > 0) {
@@ -315,6 +315,21 @@ var UIController = (function () {
                     current.textContent = '---';
                 }
             });
+        },
+
+        changedType: function () {
+            var inputFields;
+
+            inputFields = document.querySelectorAll(
+                DOMstrings.inputType + ', ' +
+                DOMstrings.inputDescription + ', ' +
+                DOMstrings.inputValue);
+            
+            nodeListForEach(inputFields, function(current) {
+                current.classList.toggle('red-focus');
+            });
+
+            document.querySelector(DOMstrings.inputBtn).classList.toggle('red');
         },
     };
 
@@ -337,6 +352,8 @@ var controller = (function (budgetCtrl, UICtrl) {
 
         // Using event delegation
         document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+
+        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType());
     };
 
     var updateBudget = function () {
