@@ -165,6 +165,7 @@ var UIController = (function () {
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
         expensesPercentageLabel: '.item__percentage',
+        dateLabel: '.budget__title--month'
 
 
     };
@@ -277,6 +278,20 @@ var UIController = (function () {
             } else {
                 document.querySelector(DOMstrings.percentageLabel).textContent = '---';
             }
+        },
+
+        displayMonth: function () {
+            var now, year, month, months;
+            
+            //Create new date object which is always the current date
+            now = new Date();
+
+            // Define the months
+            months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            year = now.getFullYear(); // Get year of current date
+            month = now.getMonth(); // Get the current month (zero based) so for example 8 is September
+            document.querySelector(DOMstrings.dateLabel).textContent = months[month] + ' ' + year; // Use the month value to get the correct month out of the array
         },
 
         displayPercentages: function (percentages) {
@@ -401,12 +416,15 @@ var controller = (function (budgetCtrl, UICtrl) {
         init: function () {
             console.log('Application has started.');
             setupEventListeners();
+
             UICtrl.displayBudget({
                 budget: 0,
                 totalInc: 0,
                 totalExp: 0,
                 percentage: 0
             });
+
+            UICtrl.displayMonth();
         },
     };
 
