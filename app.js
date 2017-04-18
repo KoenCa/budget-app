@@ -353,7 +353,7 @@ var controller = (function (budgetCtrl, UICtrl) {
         // Using event delegation
         document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
 
-        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType());
+        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);
     };
 
     var updateBudget = function () {
